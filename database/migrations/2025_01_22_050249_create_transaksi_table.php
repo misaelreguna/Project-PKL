@@ -13,13 +13,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('topup_transaksi', function (Blueprint $table) {
+        Schema::create('transaksi', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained()->references('id')->on('users')->onDelete('cascade');
+            $table->foreignId('sender_id')->constrained('users')->references('id')->on('users')->onDelete('cascade');
+            $table->foreignId('receiver_id')->nullable()->constrained('users')->onDelete('cascade');
             $table->enum('tipe_transaksi',['topup','tarik','transfer']);
             $table->bigInteger('amount');
-            $table->enum('status',['pending','completed','failed']);
-            $table->foreignId('saldo_id')->constrained()->references('id')->on('saldo')->onDelete('cascade');
+            $table->boolean('confirmed')->default(false);
             $table->timestamps();
         });
     }
