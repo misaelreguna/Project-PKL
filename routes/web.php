@@ -5,6 +5,7 @@ use App\Http\Controllers\BankController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\LoginController;
+use App\Http\Controllers\MutasiController;
 
 /*
 |--------------------------------------------------------------------------
@@ -54,12 +55,26 @@ Route::middleware(['auth'])->group(function(){
 
     Route::group(['middleware' => ['checkRole:bank']],function(){
         Route::resource('bank',controller:BankController::class)->except('show');
-        Route::post('bank/topup',[BankController::class,'topup'])->name('bank.topup');
+        Route::post('bank/topup/{id}',[BankController::class,'topup'])->name('bank.topup');
         Route::post('bank/tariktunai',[BankController::class,'tariktunai'])->name('bank.tariktunai');
+        Route::post('bank/confirmTopup/{id}',[BankController::class,'confirmTopup'])->name('bank.confirmTopup');
     });
 
-    // Route::resource('admin',AdminController::class);
-    // Route::resource('bank',BankController::class);
-    // Route::resource('user',UserController::class);
+    Route::group(['middleware' => ['auth']], function() {
+        // Mutasi untuk user: cetak semua transaksi user yang sedang login
+        Route::get('/mutasi/user', [MutasiController::class, 'userAll'])
+            ->name('mutasi.user.all');
+    
+        // Mutasi untuk user: cetak detail satu transaksi
+        Route::get('/mutasi/user/{id}', [MutasiController::class, 'userSingle'])
+            ->name('mutasi.user.single');
+    
+        // Route untuk admin dan bank: cetak semua transaksi
+        // Pastikan tambahkan middleware khusus misalnya 'role:admin,bank'
+        Route::get('/mutasi/all', [MutasiController::class, 'mutasiAll'])
+            ->name('mutasi.mutasi.all');
+    });
+
+    
 
 });

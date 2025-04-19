@@ -57,7 +57,7 @@
                                 {{ Auth::user()->role }}
                             </span>
                         </div>
-                        <div>
+                        <div class="gap-8 flex">
                             <button class="mt-6" data-modal-target="tambah-modal" data-modal-toggle="tambah-modal"
                                 type="button">
                                 <div class="bg-white rounded-xl shadow-lg p-6 h-20 gap-3 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl animate-slide-up flex items-center"
@@ -70,6 +70,13 @@
                                     <h3 class="text-xl font-bold text-indigo-800 ">TAMBAH DATA</h3>
                                 </div>
                             </button>
+                            <a class="mt-6" href="{{ route('mutasi.mutasi.all') }}">
+                                <div class="bg-white rounded-xl shadow-lg p-6 h-20 gap-3 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl animate-slide-up flex items-center"
+                                    style="animation-delay: 0.1s">
+                                    <svg xmlns="http://www.w3.org/2000/svg" height="35px" viewBox="0 -960 960 960" width="35px" fill="#1f1f1f"><path d="M440-200h80v-167l64 64 56-57-160-160-160 160 57 56 63-63v167ZM240-80q-33 0-56.5-23.5T160-160v-640q0-33 23.5-56.5T240-880h320l240 240v480q0 33-23.5 56.5T720-80H240Zm280-520v-200H240v640h480v-440H520ZM240-800v200-200 640-640Z"/></svg>
+                                    <h3 class="text-xl font-bold text-indigo-800 ">CETAK HISTORY</h3>
+                                </div>
+                            </a>
                         </div>
                     </div>
 
@@ -108,15 +115,14 @@
                                             </span>
 
                                             <span class="bg-green-500 text-white py-1 px-2 rounded-full text-xs">
-                                                <a href="{{ route('admin.edit', ['admin' => $item->id]) }}">
-                                                <button type="submit">
+                                                <button type="submit"  data-modal-target="edit-modal{{ $item->id }}" data-modal-toggle="edit-modal{{ $item->id }}">
                                                     <svg xmlns="http://www.w3.org/2000/svg" height="24px"
                                                         viewBox="0 -960 960 960" width="24px" fill="#1f1f1f">
                                                         <path
                                                             d="M200-200h57l391-391-57-57-391 391v57Zm-80 80v-170l528-527q12-11 26.5-17t30.5-6q16 0 31 6t26 18l55 56q12 11 17.5 26t5.5 30q0 16-5.5 30.5T817-647L290-120H120Zm640-584-56-56 56 56Zm-141 85-28-29 57 57-29-28Z" />
                                                     </svg>
                                                 </button>
-                                                </a>
+                                            
                                             </span>
                                         </td>
                                     </tr>
@@ -224,9 +230,9 @@
                                     <option value="bank">Bank</option>
                                 </select>
                             </div>
-                            <button type="submit"
-                                class="w-full text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Login
-                                to your account</button>
+                            <button type="submit" data-modal-target="edit-modal{{ $item->id }}" data-modal-toggle="edit-modal{{ $item->id }}"
+                                class="w-full mt-3 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"> Add User
+                            </button>
                         </form>
                     </div>
                 </div>
@@ -235,6 +241,58 @@
     </form>
     <!-- End Modals Tamabh Data  -->
 
+    <!-- Modal Edit -->
+    @foreach ($user as $item)
+    <div id="edit-modal{{ $item->id }}" tabindex="-1" aria-hidden="true" class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
+        <div class="relative p-4 w-full max-w-md max-h-full">
+            <!-- Modal content Edit -->
+            <div class="relative rounded-lg shadow bg-white">
+                <!-- Modal header Edit -->
+                <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t border-gray-600">
+                    <h3 class="text-xl font-semibold text-black">
+                        Edit Data Users
+                    </h3>
+                    <button type="button" class="end-2.5 text-gray-400 bg-transparent rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center hover:bg-gray-600 hover:text-black" data-modal-hide="edit-modal{{ $item->id }}">
+                        <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+                        </svg>
+                        <span class="sr-only">Close modal</span>
+                    </button>
+                </div>
+                <!-- Modal body Edit -->
+                <div class="p-4 md:p-5">
+                    <form class="space-y-4" action="{{ route('admin.update', $item->id) }}" method="POST">
+                        @csrf
+                        @method('PUT')
+                        <div>
+                            <label for="name" class="block mb-2 text-sm font-medium text-black">Nama</label>
+                            <input type="text" name="name" id="name" value="{{ $item->name }}" class="border text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 bg-white-600 border-gray-500 placeholder-gray-400 text-black" placeholder="Nama Anda" required />
+                        </div>
+                        <div>
+                            <label for="name" class="block mb-2 text-sm font-medium text-black">Email</label>
+                            <input type="email" name="email" id="email" value="{{ $item->email }}" class="border text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 bg-white-600 border-gray-500 placeholder-gray-400 text-black" placeholder="Nama Anda" required />
+                        </div>
+                        <div>
+                            <label for="role" class="block mb-2 text-sm font-medium text-black">Masukan Nama</label>
+                            <select type="text" name="role" id="role" class="bg-white-50 border border-gray-500 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" required="">
+                                <option value="{{ $item->role }}">{{ $item->role }}</option>
+                                <option value="admin">Admin</option>
+                                <option value="user">User</option>
+                                <option value="bank">Bank</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="password" class="block mb-2 text-sm font-medium text-black">Your password</label>
+                            <input type="password" name="password" id="password" placeholder="Ketik Jika Ingin Merubah Password!" class="border text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 bg-white-600 border-gray-500 placeholder-gray-400 text-black" />
+                        </div>
+                        <button type="submit" class="w-full mt-2 text-white focus:ring-4 focus:outline-none font-medium rounded-lg text-sm px-5 py-2.5 text-center bg-blue-600 hover:bg-blue-700 focus:ring-blue-800">Edit Data</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    @endforeach
+    <!-- End Modal Edit-->
     <script src="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.js"></script>
 </body>
 

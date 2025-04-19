@@ -35,7 +35,7 @@ class AdminController extends Controller
             'password' => 'required',
             'name' => 'required'
         ]);
-
+        
         User::create([
             'email' => $request->email,
             'name' => $request->name,
@@ -58,8 +58,7 @@ class AdminController extends Controller
      */
     public function edit(string $id)
     {
-        $admin = User::find($id);
-        return view('admin.edit', compact('admin'));
+        //
     }
 
     /**
@@ -69,7 +68,7 @@ class AdminController extends Controller
     {
         $user = User::find($id);
         $request->validate([
-            'email' => 'required|email|unique:users,name',
+            'email' => 'required|email|unique:users,email,' . $user->id,
             'role' => 'required|string',
             'password' => 'nullable|max:8',
             'name' => 'required|string'
